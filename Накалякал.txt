@@ -1,0 +1,314 @@
+#include <iostream>
+#include <cmath>
+#include <sstream>
+#include <cstring>
+#include <string>
+#include <locale.h>
+#define co cout << endl;
+#define PI 3.14159265
+using namespace std;
+
+class Array {
+protected:
+    unsigned char arr[100];
+    int count = 0;
+public:
+    Array() {};
+    Array(int Count) {
+        if(Count > 0 && Count < 101){
+            for (int i = 0; i < Count; i++)
+                arr[i] = '0';
+            count = Count;
+        }
+        else { 
+            cout << "Введено недопустимое значение";
+            exit(0);
+        }
+    
+    };
+    virtual Array sum_arr(Array A, Array B) {
+        return 0;
+    }
+    unsigned char& operator[] (int index){
+        return arr[index];
+    }
+    int get_c() const {
+        return count;
+    }
+    void put_c(int x){
+        count = x;
+    }
+    Array count_in(int x) {
+        count = x;
+        return *this;
+    }
+};
+
+class BitString : public Array{
+public:
+    BitString() {};
+    BitString(int Count): Array(Count){};
+    virtual BitString sum_arr(BitString A){
+        BitString C;
+        int flag = 0;
+        if (A.get_c() >= get_c())
+            C.count_in(A.get_c());
+        else {
+            C.count_in(get_c());
+            flag = 1;
+        }
+        if (flag == 0)
+            for (int i = 0; i < A.get_c(); i++)
+            {
+                if ((A[i] == '0') && (arr[i] == '0'))
+                {
+                    C[i] = '0';
+                }
+                else
+                {
+                    C[i] = '1';
+                }
+            }
+        if (flag == 1)
+        {
+            if (flag == 0)
+                for (int i = 0; i < A.get_c(); i++)
+                {
+                    if ((A[i] == '0') && (arr[i] == '0'))
+                    {
+                        C[i] = '0';
+                    }
+                    else
+                    {
+                        C[i] = '1';
+                    }
+                }
+        }
+        return C;
+    }
+    friend ostream& operator<<(ostream& t, BitString A);
+};
+istream & operator>>(istream &is, BitString& A){
+        for (int i = A.get_c() - 1; i >= 0; i--) {
+            is >> A[i];
+            if(A[i]!='0' && A[i]!='1'){
+                cout << "Введите бит заного: ";
+                is >> A[i];
+            }
+        }
+        return is;
+    }
+ostream& operator<<(ostream& t, BitString A) {
+    if (A.get_c() == 0)
+    {
+        cout << "Битовой строки нет" << endl;
+    }
+    else {
+        for (int i = 0; i < A.get_c(); i++)
+            cout << A[i];
+    }
+    return t;
+}
+BitString OR(BitString A, BitString B){
+    BitString C;
+    int flag = 0;
+    if (A.get_c() >= B.get_c())
+        C.count_in(A.get_c());
+    else {
+        C.count_in(B.get_c());
+        flag = 1;
+    }
+    if (flag == 0)
+        for (int i = 0; i < A.get_c(); i++)
+        {
+            if ((A[i] == '0') && (B[i] == '0'))
+            {
+                C[i] = '0';
+            }
+            else
+            {
+                C[i] = '1';
+            }
+        }
+    if (flag == 1)
+    {
+        if (flag == 0)
+            for (int i = 0; i < A.get_c(); i++)
+            {
+                if ((A[i] == '0') && (B[i] == '0'))
+                {
+                    C[i] = '0';
+                }
+                else
+                {
+                    C[i] = '1';
+                }
+            }
+    }
+    return C;
+}
+BitString AND(BitString A, BitString B){
+    BitString C;
+    int flag = 0;
+    if (A.get_c() >= B.get_c())
+        C.count_in(A.get_c());
+    else {
+        C.count_in(B.get_c());
+        flag = 1;
+    }
+    if (flag == 0)
+        for (int i = 0; i < A.get_c(); i++)
+        {
+            if ((A[i] == '1') && (B[i] == '1'))
+            {
+                C[i] = '1';
+            }
+            else
+            {
+                C[i] = '0';
+            }
+
+        }
+    if (flag == 1)
+        for (int i = 0; i < B.get_c(); i++)
+        {
+            if ((A[i] == '1') && (B[i] == '1'))
+            {
+                C[i] = '1';
+            }
+            else
+            {
+                C[i] = '0';
+            }
+        }
+
+    return C;
+}
+BitString XOR(BitString A, BitString B){
+    BitString C;
+    int flag = 0;
+    if (A.get_c() >= B.get_c())
+        C.count_in(A.get_c());
+    else {
+        C.count_in(B.get_c());
+        flag = 1;
+    }
+    if (flag == 0)
+        for (int i = 0; i < A.get_c(); i++)
+        {
+            if ((A[i] == '0') && (B[i] == '0'))
+            {
+                C[i] = '0';
+            }
+            else
+            {
+                C[i] = '1';
+            }
+        }
+    if (flag == 1)
+        for (int i = 0; i < B.get_c(); i++)
+        {
+            if ((A[i] == '0') && (B[i] == '0'))
+            {
+                C[i] = '0';
+            }
+            else
+            {
+                C[i] = '1';
+            }
+        }
+    return C;
+}
+BitString NOT(BitString A){
+    BitString C;
+    C.count_in(A.get_c());
+    for (int i = 0; i < A.get_c(); i++)
+    {
+        if (A[i] == '0')
+        {
+            C[i] = '1';
+        }
+        if (A[i] == '1')
+        {
+            C[i] = '0';
+        }
+
+    }
+    return C;
+}
+BitString left_s(BitString A, int x){
+    int new_c = A.get_c();
+    for(int i = 0; i < x; i++){
+        A[A.get_c()+i] = '0';
+        new_c++;
+    }
+    A.count_in(new_c);
+    return A;
+
+}
+BitString right_s(BitString A, int x){
+    A.count_in(A.get_c()-x);
+    return A;
+}
+
+class String : public Array{
+public:
+    String() {};
+    String(int Count): Array(Count){};
+};
+
+int main(){
+    setlocale(LC_ALL, "rus");
+    int m, n, x = 0;
+    float s;
+    int Sp;
+    cout << "Введите номер класса с которым хотите работать: \n1)BitString;\n2)String\n-->";
+    cin >> Sp;
+    switch (Sp) {
+    case 1:
+    {
+        int g = 0;
+        cout << "Введите кол-во элементов Битовых строк: " << endl;
+        cin >> n;
+        BitString A(n), B(n);
+        cout << "Введите первую битовую строку: ";
+        cin >> A;
+        cout << "Введите вторую битовую строку: ";
+        cin >> B;
+        cout << "Первая строка: ";
+        cout << A; co
+        cout << "Вторая строка: ";
+        cout << B; co
+        cout << "Сумма строк: " << B.sum_arr(A); co
+        cout << "NOT первой строки: " << NOT(A); co
+        cout << "XOR: " << XOR(A, B); co
+        cout << "OR: " << OR(A, B); co
+        cout << "AND: " << AND(A, B); co
+        cout << "Введите кол-во битов для сдвига первой строки влево: ";
+        cin >> g;
+        A = left_s(A, g);
+        cout << "Число приняkо вид: " << A; co
+        cout << "Введите кол-во битов для сдвига первой строки вправо: ";
+        cin >> g;
+        A = right_s(A, g);
+        cout << "Число приняkо вид: " << A; co
+        break;
+    }
+    case 2:
+    {
+        int count_st;
+        char st;
+        cout << "Введите первую строку (на английском): ";
+        getline(cin, st);
+        cin.ignore();
+        count_st = st.length();
+        cout << count_st;
+        String st1(count_st);
+        break;
+    }
+
+    default: cout << "Неизвестный номер способа";
+    }
+
+    return 0;
+}
